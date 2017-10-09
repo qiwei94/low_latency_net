@@ -19,4 +19,7 @@ cat /proc/sys/net/ipv4/tcp_available_congestion_control 查看支持的tcp拥塞
 cat /proc/sys/net/ipv4/tcp_congestion_control 查看当前的tcp拥塞控制 
 sudo sysctl -w net.ipv4.tcp_congestion_control=dctcp 修改当前的拥塞控制算法 
 
+fs/aufs/Makefile:2: fs/aufs/magic.mk: No such file or directory
+make[2]: *** No rule to make target `fs/aufs/magic.mk'.  Stop.
+
 
