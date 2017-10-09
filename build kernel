@@ -23,3 +23,75 @@ fs/aufs/Makefile:2: fs/aufs/magic.mk: No such file or directory
 make[2]: *** No rule to make target `fs/aufs/magic.mk'.  Stop.
 drivers/ipack/Kconfig:22: can't open file "drivers/ipack/devices/Kconfig"
 
+https://reproducingnetworkresearch.wordpress.com/2016/05/30/cs244-16-dctcp/
+
+README
+
+Launch an instance with our AMI DCTCP_CS244_16 (us-west-2 region) and in Configure Instance Details, please select tenancy as Dedicated – Run a Dedicated Instance. Be sure to allow all TCP, UDP and HTTP traffic from anywhere while setting the security groups.                                  
+Ssh to the instance.
+Clone the dctcp repo – hg clone https://priyaduraisamy@bitbucket.org/priyaduraisamy/dctcp
+cd into dctcp folder
+sudo mn -c && sudo ./run.sh
+The experiments totally take about 1 hour to run. Please ensure ssh connectivity does not break while the code is running. Alternatively, you could run it on a separate screen and detach it and check after about an hour. 
+
+In the end, there is a folder results within dctcp that contains the results. We observed very rarely that the resulted figures are a bit off from what is expected – we think it is due to load variations on AWS servers. If this happens, we request the reader to run it again to see the results if are ok.
+
+To view the graphs :
+
+cd /dctcp/results
+python -m SimpleHTTPServer
+Open a browser and type <instance_ip>:8000 and open each image to view. The images are named appropriately so you can identify them easily.
+
+ Instructions to build the kernel from scratch – for future batches (if our image gets pulled down from AWS) :
+
+Launch an Ubuntu 12.04 instance with Root volume 12 GB. While selecting security groups,  be sure to allow all TCP, all UDP and HTTP traffic from anywhere.
+ssh to the instance
+sudo apt-get update
+sudo apt-get install git                                                        
+git clone git://github.com/mininet/mininet                                      
+sudo mininet/util/install.sh -a                                                 
+sudo mn –test pingall                                                          
+git clone https://github.com/mininet/mininet-tests.git   
+Follow instructions from [2] to install the DCTCP patch until (and including)
+Open /boot/grub/menu.lst in an editor of your choice (as root) and add the following lines to invoke this kernel by default. These lines should be added towards the bottom of the file above all existing similar entries. Give a title to identify the kernel. Use root,kernel and initrd same as the others in the file but change what follows vmlinuz- and initrd.img- to 3.2.18-dctcp. Leave the other parameters as it is.
+title         Ubuntu 12.04.5 LTS, kernel 3.2.18-dctcp                         
+
+root         (hd0)                                                           
+
+kernel      /boot/vmlinuz-3.2.18-dctcp root=LABEL=cloudimg-rootfs ro console=hvc0
+
+initrd       /boot/initrd.img-3.2.18-dctcp    
+
+11. Reboot the system using reboot
+
+Ssh back into the system
+
+12. sudo apt-get install mercurial                                                
+
+13. sudo rm -rf /usr/local/bin/mn /usr/local/bin/mnexec \
+
+/usr/local/lib/python*/*/*mininet* \
+
+/usr/local/bin/ovs-* /usr/local/sbin/ovs-*
+
+14. sudo apt-get install mininet/precise-backports
+
+15. sudo service openvswitch-controller stop                                        
+
+16. sudo update-rc.d openvswitch-controller disable                                 
+
+17. sudo mn –test pingall
+
+18. sudo apt-get install python-pip                                                 
+
+19. sudo pip install termcolor                                                      
+
+20. sudo pip install matplotlib                                                     
+
+21. sudo apt-get install bwm-ng                                                     
+
+22. hg clone https://priyaduraisamy@bitbucket.org/priyaduraisamy/dctcp  
+
+23. Now follow the steps given previously to run the experiment.
+
+The above steps take ~3-4 hours to complete.
