@@ -1,0 +1,42 @@
+curl -X PUT -d '"tcp:127.0.0.1:6632"' http://localhost:8080/v1.0/conf/switches/0000000000000001/ovsdb_addr
+
+ovs-vsctl show
+
+ovs-vsctl list Qos
+ovs-vsctl list Queue
+
+ovs-vsctl --all destroy Qos
+ovs-vsctl --all destroy Queue
+
+tc qdisc show dev s1-eth1
+
+
+tc class show dev s1-eth1
+
+tc qdisc add dev s1-eth1  root handle 1:  htb
+
+add:
+curl -X POST -d '{"port_name": "s1-eth1", "type": "linux-htb", "max_rate":"100000000", "queues": [{"min_rate":"20000000", "max_rate": "50000000"}, {"min_rate": "80000000"}]}' http://localhost:8080/qos/queue/0000000000000001
+
+check:
+curl -X GET http://localhost:8080/qos/queue/0000000000000001
+
+delete:
+curl -X DELETE http://localhost:8080/qos/queue/0000000000000001
+curl -X DELETE -d '{"qos_id":"all"}' http://localhost:8080/qos/rules/0000000000000001 
+curl -X DELETE -d '{"qos_id":"1"}' http://localhost:8080/qos/rules/0000000000000001
+
+
+
+
+set up qos rules:
+curl -X POST -d '{"priority": "1","match": {"nw_dst": "10.0.0.1", "nw_proto": "UDP", "tp_dst":"5002"}, "actions":{"queue": "1"}}' http://localhost:8080/qos/rules/0000000000000001
+[{"switch_id": "0000000000000001", "command_result": [{"result": "success", "details": "QoS added. : qos_id=1"}]}]
+
+map to queue:
+curl -X POST -d '{"match": {"ip_dscp": "26"}, "actions":{"queue": "1"}}' http://localhost:8080/qos/rules/0000000000000001
+curl -X POST -d '{"match": {"ip_dscp": "34"}, "actions":{"queue": "2"}}' http://localhost:8080/qos/rules/0000000000000001
+
+
+
+
