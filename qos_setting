@@ -40,5 +40,22 @@ curl -X POST -d '{"match": {"ip_dscp": "34"}, "actions":{"queue": "2"}}' http://
 curl -X POST -d '{"match": {"nw_dst": "10.0.0.1", "nw_proto": "TCP", "tp_dst": "5001"}, "actions":{"mark": "60"}}' http://localhost:8080/qos/rules/0000000000000003
 
 
+ryu-manager ofctl_rest.py rest_qos.py qos_simple_switch_13.py rest_conf_switch.py
+（使用修改后的qos_simple_switch）
+![Alt text](./1509457703809.png)
+
+curl -X PUT -d '"tcp:192.168.50.61:6632"' http://localhost:8080/v1.0/conf/switches/0000000000000001/ovsdb_addr
+
+curl -X POST -d '{"port_name": "s1-eth1", "type": "linux-htb", "max_rate":"1000000000", "queues": [{"max_rate": "800000000"},{"max_rate": "500000000"},{"max_rate": "200000000"},{"max_rate": "100000000"}]}' \
+http://localhost:8080/qos/queue/0000000000000001
+
+
+curl -X POST -d '{"priority": "1","match": {"nw_dst": "10.0.0.1", "nw_proto": "UDP", "tp_dst":"5002"}, "actions":{"queue": "1"}}' http://localhost:8080/qos/rules/0000000000000001
+curl -X POST -d '{"priority": "1","match": {"nw_dst": "10.0.0.1", "nw_proto": "UDP", "tp_dst":"5003"}, "actions":{"queue": "2"}}' http://localhost:8080/qos/rules/0000000000000001
+curl -X POST -d '{"priority": "1","match": {"nw_dst": "10.0.0.1", "nw_proto": "UDP", "tp_dst":"5004"}, "actions":{"queue": "3"}}' http://localhost:8080/qos/rules/0000000000000001
+
+curl -X POST -d '{"priority": "1","match": {"nw_dst": "10.0.0.1", "nw_proto": "TCP", "tp_dst":"5002"}, "actions":{"queue": "1"}}' http://localhost:8080/qos/rules/0000000000000001
+curl -X POST -d '{"priority": "1","match": {"nw_dst": "10.0.0.1", "nw_proto": "TCP", "tp_dst":"5003"}, "actions":{"queue": "2"}}' http://localhost:8080/qos/rules/0000000000000001
+curl -X POST -d '{"priority": "1","match": {"nw_dst": "10.0.0.1", "nw_proto": "TCP", "tp_dst":"5004"}, "actions":{"queue": "3"}}' http://localhost:8080/qos/rules/0000000000000001
 
 
