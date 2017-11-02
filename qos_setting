@@ -37,6 +37,8 @@ map to queue:
 curl -X POST -d '{"match": {"ip_dscp": "26"}, "actions":{"queue": "1"}}' http://localhost:8080/qos/rules/0000000000000001
 curl -X POST -d '{"match": {"ip_dscp": "34"}, "actions":{"queue": "2"}}' http://localhost:8080/qos/rules/0000000000000001
 
+curl -X POST -d '{"match": {"nw_dst": "10.0.0.1", "nw_proto": "TCP", "tp_dst": "5001"}, "actions":{"mark": "60"}}' http://localhost:8080/qos/rules/0000000000000003
+
 
 
 
